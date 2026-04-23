@@ -16,3 +16,13 @@ Evaluates how fair a bracket arrangement is based on:
                       assuming stronger seed always advances.
 
 Score of 0 = perfectly fair bracket (lower is better).
+
+Random Search Optimiser: Bracket Fairness
+
+Randomly shuffles participant ordering within a given budget,
+evaluating the fairness score of each arrangement using the
+baseline generator. Returns the best arrangement found.
+
+Termination conditions:
+  1. Budget exhausted
+  2. Optimal solution found (score = 0)
