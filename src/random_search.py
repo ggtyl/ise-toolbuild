@@ -1,5 +1,5 @@
 import random
-from generator import Participant, SingleEliminationGenerator
+from generator import Participant
 from scoring import compute_fairness_score
 
 

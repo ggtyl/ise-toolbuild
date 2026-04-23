@@ -1,41 +1,31 @@
 # ise-toolbuild
 
-Baseline: Single Elimination Bracket Generator
-Ported from Tournado (TypeScript) to Python.
+A search-based bracket fairness optimiser for single-elimination tournaments, built as part of the Intelligent Software Engineering coursework.
 
-The generator uses sequential pairing — participants are paired in the order
-they are given, with byes assigned to the first participants in the list.
-This serves as the baseline for the bracket fairness optimiser.
+The baseline generator is ported from [Tournado](https://gitlab.com/your-tournado-repo), a web-based tournament management system.
 
-Scoring Function: Bracket Fairness via Match Sum Deviation
+## Project Structure
+```
+src/
+generator.py          # Baseline: sequential bracket generator (ported from Tournado)
+scoring.py            # Fairness scoring function (match sum deviation)
+random_search.py      # Random Search optimiser
+genetic_algorithm.py  # Genetic Algorithm optimiser
+experiment.py         # Experiment runner
+analysis.py           # Statistical analysis (Wilcoxon signed-rank test)
+visualise.py          # Figure generation
+results/
+results.csv           # Raw experiment results
+boxplot_improvement.png
+lineplot_improvement.png
+```
 
-Evaluates how fair a bracket arrangement is based on:
-  1. Bye fairness   — are byes allocated to the top b seeds?
-  2. Match sum rule — do match sums equal the ideal sum for each round?
-                      Ideal sum for round r = 2^(rounds_remaining + 1) + 1
-                      assuming stronger seed always advances.
+## Experiment Parameters
 
-Score of 0 = perfectly fair bracket (lower is better).
+- Participant counts: 8, 12, 16, 24, 32, 48, 64
+- Runs: 30 (seeds 1-30)
+- Budget: scaled per participant count (100-1500)
 
-Random Search Optimiser: Bracket Fairness
+## Running
 
-Randomly shuffles participant ordering within a given budget,
-evaluating the fairness score of each arrangement using the
-baseline generator. Returns the best arrangement found.
-
-Termination conditions:
-  1. Budget exhausted
-  2. Optimal solution found (score = 0)
-
-Genetic Algorithm Optimiser: Bracket Fairness
-
-Uses a genetic algorithm to find the fairest bracket arrangement
-by evolving a population of participant orderings.
-
-Components:
-  - Initialisation: random population of arrangements
-  - Selection: tournament selection
-  - Crossover: Order Crossover (OX) for permutation validity
-  - Mutation: random swap of two positions
-  - Elitism: best individual always preserved
-  - Termination: budget exhausted or score = 0
+See `replication.pdf` for full replication instructions.
