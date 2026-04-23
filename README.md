@@ -26,3 +26,16 @@ baseline generator. Returns the best arrangement found.
 Termination conditions:
   1. Budget exhausted
   2. Optimal solution found (score = 0)
+
+Genetic Algorithm Optimiser: Bracket Fairness
+
+Uses a genetic algorithm to find the fairest bracket arrangement
+by evolving a population of participant orderings.
+
+Components:
+  - Initialisation: random population of arrangements
+  - Selection: tournament selection
+  - Crossover: Order Crossover (OX) for permutation validity
+  - Mutation: random swap of two positions
+  - Elitism: best individual always preserved
+  - Termination: budget exhausted or score = 0
