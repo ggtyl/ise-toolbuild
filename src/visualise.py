@@ -1,23 +1,38 @@
+"""
+Visualisation: Bracket Fairness Optimisation Results
+
+Generates figures and summary table for the report:
+  1. Box plot  — percentage improvement over baseline per participant count
+                 (Random Search vs Genetic Algorithm, 30 runs)
+  2. Line plot — mean percentage improvement vs participant count
+                 with standard deviation shading
+
+Percentage improvement = (baseline - score) / baseline * 100
+Higher improvement = fairer bracket found.
+
+Figures saved to: results/
+"""
+
 import os
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 
 RESULTS_FILE = os.path.join(os.path.dirname(__file__), '..', 'results', 'results.csv')
 OUTPUT_DIR = os.path.join(os.path.dirname(__file__), '..', 'results')
 
 
 def load_and_compute(df: pd.DataFrame) -> pd.DataFrame:
-    """Compute percentage improvement over baseline for RS and GA."""
+    # Compute percentage improvement over baseline for RS and GA.
     df['rs_improvement'] = (df['baseline_score'] - df['rs_score']) / df['baseline_score'] * 100
     df['ga_improvement'] = (df['baseline_score'] - df['ga_score']) / df['baseline_score'] * 100
     return df
 
 
 def plot_boxplot(df: pd.DataFrame):
-    """Box plot of percentage improvement over baseline per participant count."""
+    # Box plot of percentage improvement over baseline per participant count.
     participant_counts = sorted(df['participants'].unique())
     n_groups = len(participant_counts)
 
@@ -64,7 +79,7 @@ def plot_boxplot(df: pd.DataFrame):
 
 
 def plot_lineplot(df: pd.DataFrame):
-    """Line plot of mean percentage improvement vs participant count."""
+    # Line plot of mean percentage improvement vs participant count.
     participant_counts = sorted(df['participants'].unique())
 
     rs_means = [df[df['participants'] == n]['rs_improvement'].mean() for n in participant_counts]
@@ -105,7 +120,7 @@ def plot_lineplot(df: pd.DataFrame):
 
 
 def print_summary_table(df: pd.DataFrame):
-    """Print summary table for report."""
+    # Print summary table for report.
     from scipy import stats
 
     print("\n=== Summary Table ===")

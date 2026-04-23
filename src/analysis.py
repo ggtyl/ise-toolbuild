@@ -1,3 +1,21 @@
+"""
+Statistical Analysis: Bracket Fairness Optimisation Results
+
+Compares Random Search and Genetic Algorithm against the sequential
+baseline using the Wilcoxon signed-rank test — a non-parametric test
+appropriate for paired samples without assuming normal distribution.
+
+Metrics reported per participant count:
+  - Mean, median, min, max scores for RS and GA
+  - Win/draw/loss count (GA vs RS across 30 runs)
+  - Wilcoxon signed-rank test p-values:
+      * RS vs Baseline
+      * GA vs Baseline
+      * GA vs RS
+
+Results loaded from: results/results.csv
+"""
+
 import os
 import pandas as pd
 import numpy as np

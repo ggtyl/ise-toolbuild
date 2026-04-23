@@ -1,3 +1,22 @@
+"""
+Scoring Function: Bracket Fairness via Match Sum Deviation
+
+Evaluates how fair a bracket arrangement is based on two rules:
+
+  1. Bye fairness   — byes should be allocated to the top b seeds,
+                      where b is the number of byes required.
+                      Penalty of 1 per bye assigned to a non-top seed.
+
+  2. Match sum rule — in a perfectly seeded bracket, the sum of seeds
+                      in any match equals 2^r + 1, where r is the number
+                      of rounds remaining (including the current round).
+                      Deviation = |actual_sum - ideal_sum| per match,
+                      summed across all rounds (simulated assuming stronger
+                      seed always advances).
+
+Total score = bye_penalty + round_deviation (lower is better, 0 = perfect).
+"""
+
 import math
 from generator import Participant, SingleEliminationGenerator
 
@@ -11,7 +30,7 @@ def compute_fairness_score(participants: list[Participant]) -> int:
     bracket = SingleEliminationGenerator.generate_bracket(participants)
     round1 = bracket.rounds[0]
 
-    # --- Rule 2: Bye fairness ---
+    # --- Bye fairness ---
     # Top b seeds should receive byes (b = number of byes)
     top_seeds = set(range(1, byes + 1))
     bye_penalty = 0
@@ -63,12 +82,12 @@ if __name__ == "__main__":
 
     test_cases = {
         "6 participants — baseline (sequential)": [1, 2, 3, 4, 5, 6],
-        "6 participants — ideal":                 [1, 2, 4, 5, 3, 6],  # byes to seed 1,2; matches: 3v6, 4v5 — will verify
+        "6 participants — ideal":                 [1, 2, 4, 5, 3, 6],  # byes to seed 1,2; matches: 3v6, 4v5
         "6 participants — wrong bye allocation":  [3, 5, 1, 2, 4, 6],  # byes to seed 3,5
         "8 participants — baseline (sequential)": [1, 2, 3, 4, 5, 6, 7, 8],
         "8 participants — ideal":                 [1, 8, 5, 4, 3, 6, 7, 2],
         "12 participants — baseline":             list(range(1, 13)),
-        "12 participants — ideal":                [1, 4, 3, 2, 8, 9, 5, 12, 6, 11, 7, 10],  # will verify
+        "12 participants — ideal":                [1, 4, 3, 2, 8, 9, 5, 12, 6, 11, 7, 10],
         "16 participants — baseline":             list(range(1, 17)),
         "16 participants — ideal":                [1, 16, 8, 9, 4, 13, 5, 12, 3, 14, 6, 11, 2, 15, 7, 10],
     }

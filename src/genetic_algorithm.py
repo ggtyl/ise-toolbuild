@@ -1,34 +1,54 @@
+"""
+Genetic Algorithm Optimiser: Bracket Fairness
+
+Uses a genetic algorithm to find the fairest bracket arrangement
+by evolving a population of participant orderings.
+
+Components:
+  - Initialisation:      random population of arrangements
+  - Selection:           tournament selection (best of k random candidates)
+  - Crossover:           Order Crossover (OX) — preserves permutation validity
+  - Mutation:            random swap of two positions
+  - Elitism:             best individual always carried to next generation
+  - Termination:         budget exhausted or score = 0
+
+Parameters (genetic_algorithm):
+  participants:    list of Participant objects (ordered by seed rank)
+  budget:          maximum number of arrangements to evaluate
+  population_size: number of individuals per generation (default: 20)
+  mutation_rate:   probability of mutation per child (default: 0.2)
+  tournament_k:    number of candidates in tournament selection (default: 2)
+  seed:            random seed for reproducibility
+
+Returns:
+  best_score:        lowest fairness score found
+  best_arrangement:  participant ordering that achieved best_score
+  evaluations:       number of evaluations used
+"""
+
 import random
 from generator import Participant
 from scoring import compute_fairness_score
 
 
 def _tournament_selection(
-    population: list[list[Participant]],
-    scores: list[int],
-    k: int = 2
+    population: list[list[Participant]], scores: list[int], k: int = 2
 ) -> list[Participant]:
-    """Select best individual from k randomly chosen candidates."""
+    # Select best individual from k randomly chosen candidates.
     candidates = random.sample(range(len(population)), k)
     best = min(candidates, key=lambda i: scores[i])
     return population[best][:]
 
 
 def _order_crossover(
-    parent_a: list[Participant],
-    parent_b: list[Participant]
+    parent_a: list[Participant], parent_b: list[Participant]
 ) -> list[Participant]:
-    """
-    Order Crossover (OX) for permutation problems.
-    Preserves relative order of elements from both parents
-    while ensuring no duplicates.
-    """
     n = len(parent_a)
 
     # Pick random segment from parent A
     start = random.randint(0, n - 2)
     end = random.randint(start + 1, n - 1)
-    segment = parent_a[start:end + 1]
+    segment = parent_a[start : end + 1]
     segment_ids = {p.id for p in segment}
 
     # Fill remaining from parent B in order, skipping segment elements
@@ -36,7 +56,7 @@ def _order_crossover(
 
     # Build child
     child = [None] * n
-    child[start:end + 1] = segment
+    child[start : end + 1] = segment
 
     # Fill positions before and after segment
     remaining_iter = iter(remaining)
@@ -47,10 +67,9 @@ def _order_crossover(
 
 
 def _mutate(
-    arrangement: list[Participant],
-    mutation_rate: float = 0.2
+    arrangement: list[Participant], mutation_rate: float = 0.2
 ) -> list[Participant]:
-    """Randomly swap two positions with given probability."""
+    # Randomly swap two positions with given probability.
     if random.random() < mutation_rate:
         i, j = random.sample(range(len(arrangement)), 2)
         arrangement[i], arrangement[j] = arrangement[j], arrangement[i]
@@ -63,29 +82,13 @@ def genetic_algorithm(
     population_size: int = 20,
     mutation_rate: float = 0.2,
     tournament_k: int = 2,
-    seed: int = None
+    seed: int = None,
 ) -> tuple[int, list[Participant], int]:
-    """
-    Perform genetic algorithm search to find the fairest bracket arrangement.
-
-    Args:
-        participants: list of Participant objects (ordered by seed)
-        budget: maximum number of arrangements to evaluate
-        population_size: number of individuals per generation
-        mutation_rate: probability of mutation
-        tournament_k: number of candidates in tournament selection
-        seed: random seed for reproducibility
-
-    Returns:
-        best_score: lowest fairness score found
-        best_arrangement: participant ordering that achieved best_score
-        evaluations: number of evaluations used
-    """
     if seed is not None:
         random.seed(seed)
 
     evaluations = 0
-    best_score = float('inf')
+    best_score = float("inf")
     best_arrangement = None
 
     # --- Initialisation ---
@@ -148,29 +151,25 @@ def genetic_algorithm(
 
 
 if __name__ == "__main__":
+    from random_search import random_search
+
     print("=== Smoke Test: Genetic Algorithm ===\n")
 
     test_cases = [
-        ("4 participants",  4),
-        ("6 participants",  6),
-        ("8 participants",  8),
-        ("12 participants", 12),
-        ("16 participants", 16),
+        ("8 participants", 8, 100),
+        ("12 participants", 12, 200),
+        ("16 participants", 16, 300),
+        ("24 participants", 24, 500),
+        ("32 participants", 32, 750),
     ]
 
-    for label, n in test_cases:
+    for label, n, budget in test_cases:
         participants = [Participant(id=i) for i in range(1, n + 1)]
 
-        # Baseline score
         baseline_score = compute_fairness_score(participants)
-
-        # Random search score
-        from random_search import random_search
-        rs_score, _, rs_evals = random_search(participants, budget=100, seed=42)
-
-        # GA score
+        rs_score, _, rs_evals = random_search(participants, budget=budget, seed=42)
         ga_score, ga_arrangement, ga_evals = genetic_algorithm(
-            participants, budget=100, seed=42
+            participants, budget=budget, seed=42
         )
 
         print(f"--- {label} ---")

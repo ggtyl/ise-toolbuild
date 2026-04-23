@@ -1,3 +1,14 @@
+"""
+Baseline: Single Elimination Bracket Generator
+
+Ported from Tournado, a web-based single-elimination tournament management
+system developed as a final year project (original implementation in TypeScript/NestJS).
+
+The generator uses sequential pairing — participants are paired in the order
+they are given, with byes assigned to the first participants in the list.
+This sequential approach serves as the baseline for the bracket fairness optimiser.
+"""
+
 import math
 from dataclasses import dataclass, field
 from typing import Optional

@@ -1,3 +1,19 @@
+"""
+Experiment Runner: Bracket Fairness Optimisation
+
+Runs the baseline, Random Search, and Genetic Algorithm across
+multiple participant counts and independent runs, recording all
+results to a CSV file for subsequent statistical analysis.
+
+Experiment Parameters:
+  Participant counts: 8, 12, 16, 24, 32, 48, 64
+  Runs:               30 (seeds 1-30 for reproducibility)
+  Budget:             scaled per participant count (100-1500)
+
+Output:
+  results/results.csv — one row per run per participant count
+"""
+
 import os
 import csv
 from generator import Participant
