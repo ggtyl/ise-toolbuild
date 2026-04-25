@@ -61,7 +61,7 @@ def analyse():
         else:
             stat, p = stats.wilcoxon(rs_scores, ga_scores)
             sig = "✓ significant" if p < 0.05 else "✗ not significant"
-            print(f"  Wilcoxon RS vs GA: p={p:.4f} ({sig})")
+            print(f"  Wilcoxon RS vs GA: p={p:.6f} ({sig})")
 
         # Wilcoxon signed-rank test (RS vs baseline)
         rs_vs_baseline = [baseline] * len(rs_scores)
@@ -70,7 +70,7 @@ def analyse():
         else:
             stat, p = stats.wilcoxon(rs_vs_baseline, rs_scores)
             sig = "✓ significant" if p < 0.05 else "✗ not significant"
-            print(f"  Wilcoxon RS vs Baseline: p={p:.4f} ({sig})")
+            print(f"  Wilcoxon RS vs Baseline: p={p:.6f} ({sig})")
 
         # Wilcoxon signed-rank test (GA vs baseline)
         ga_vs_baseline = [baseline] * len(ga_scores)
@@ -79,7 +79,7 @@ def analyse():
         else:
             stat, p = stats.wilcoxon(ga_vs_baseline, ga_scores)
             sig = "✓ significant" if p < 0.05 else "✗ not significant"
-            print(f"  Wilcoxon GA vs Baseline: p={p:.4f} ({sig})")
+            print(f"  Wilcoxon GA vs Baseline: p={p:.6f} ({sig})")
 
     print("\n" + "=" * 70)
 

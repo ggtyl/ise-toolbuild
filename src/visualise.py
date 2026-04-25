@@ -141,7 +141,7 @@ def print_summary_table(df: pd.DataFrame):
             sig = "-"
         else:
             _, p = stats.wilcoxon(rs_scores, ga_scores)
-            p_str = f"{p:.4f}"
+            p_str = "<0.0001" if p < 0.0001 else f"{p:.4f}"
             sig = "✓" if p < 0.05 else "✗"
 
         print(f"{n:>6} {baseline:>10} {np.mean(rs_scores):>10.2f} {np.mean(ga_scores):>10.2f} "
